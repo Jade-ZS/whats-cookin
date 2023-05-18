@@ -7,10 +7,8 @@ import './images/restaurant.png';
 import './images/bookmark.png';
 import './images/bookmark-filled.png'
 
-import {getIngredients, getRecipes, getUsers} from './apiCalls'
+import { getUsers} from './apiCalls'
 import { getRandomUser } from './users';
-import { sampleIngredientsData, sampleRecipeData } from '../test/sampleIngredients';
-import { sampleUserData } from '../test/sampleUsers';
 import { recipesToCook, removeRecipes} from './recipes-to-cook';
 import { recipeData }  from './data/recipes';
 import { ingredientsData } from './data/ingredients';
@@ -26,7 +24,7 @@ import {
 import { findRecipe } from './filters';
 
 //GLOBAL VARIABLE
-let currentUser
+// let currentUser
 
 // QUERY SELECTORS
 const myRecipesBtn = document.querySelector('#myRecipes');
@@ -40,13 +38,9 @@ const searchByToggle = document.querySelector('#searchSelect');
 const searchButton = document.querySelector('#searchIconBackground');
 
 const start = () => {
-  Promise.all([getUsers(), getIngredients(), getRecipes()])
- .then((data) => {
+  getUsers().then((data) => {
 
-  let userData = data[0];
-  let ingredientsData = data[1].ingredients;
-  let recipeData = data[2].recipes;
-
+  let userData = data;
   let currentUser;
 
   window.addEventListener('load', () => {
