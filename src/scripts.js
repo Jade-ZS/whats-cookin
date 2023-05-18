@@ -24,7 +24,8 @@ import {
 import { findRecipe } from './filters';
 
 //GLOBAL VARIABLE
-// let currentUser
+let currentUser
+let userData
 
 // QUERY SELECTORS
 const myRecipesBtn = document.querySelector('#myRecipes');
@@ -40,13 +41,11 @@ const searchButton = document.querySelector('#searchIconBackground');
 const start = () => {
   getUsers().then((data) => {
 
-  let userData = data;
-  let currentUser;
+  userData = data;
+  
+  currentUser = getRandomUser(userData);
+  renderRecipeCards(mainViewCardContainer, recipeData, currentUser);
 
-  window.addEventListener('load', () => {
-    currentUser = getRandomUser(userData);
-    renderRecipeCards(mainViewCardContainer, recipeData, currentUser);
-  });
   searchButton.addEventListener('click', searchBarClicked);
   myRecipesBtn.addEventListener('click', () => {
     toMyRecipeView(currentUser);
