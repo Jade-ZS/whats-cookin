@@ -12,7 +12,7 @@ import {
   mainViewCardContainer,
   currentUser,
 } from './scripts';
-import { filterByName, filterByTag } from './filters';
+import { handleSearch } from './filters';
 import { recipeData } from './data/recipes';
 
 // EVENT HANDLERS
@@ -38,7 +38,7 @@ const searchBarClicked = () => {
 
   let searchResults;
   let view;
-  
+
   if (myRecipesView.classList.contains('hidden')) {
     view = mainViewCardContainer;
   } else if (mainView.classList.contains('hidden')) {
@@ -49,12 +49,9 @@ const searchBarClicked = () => {
   } else if (searchByToggle.value === 'select') {
     handleInvalidSearch('⬅️ You must search by tag or name.');
     searchResults = recipeData;
-  } else if (searchByToggle.value === 'tag') {
-    searchResults = handleTagSearch();
-  } else if (searchByToggle.value === 'name') {
-    searchResults = handleNameSearch();
+  } else {
+    searchResults = searchForRecipes()
   }
-// potential refactor: turn this into a search object
   handleSearchResults(view, searchResults);
 };
 
@@ -63,27 +60,19 @@ const handleInvalidSearch = (message) => {
   searchBar.placeholder = message;
 };
 
-const handleTagSearch = () => {
+const searchForRecipes = () => {
   if (myRecipesView.classList.contains('hidden')) {
-    return filterByTag(searchBar.value, recipeData);
+    return handleSearch(searchBar.value, recipeData, searchByToggle.value);
   } else if (mainView.classList.contains('hidden')) {
-    return filterByTag(searchBar.value, currentUser.recipesToCook);
+    return handleSearch(searchBar.value, currentUser.recipesToCook, searchByToggle.value);
   }
 };
 
-const handleNameSearch = () => {
-  if (myRecipesView.classList.contains('hidden')) {
-    return filterByName(searchBar.value, recipeData);
-  } else if (mainView.classList.contains('hidden')) {
-    return filterByName(searchBar.value, currentUser.recipesToCook);
-  }
-};
-
-const handleSearchResults = (view, results) => {
-  if (typeof results === 'string') {
-    view.innerHTML = `<p>${results}</p>`;
+const handleSearchResults = (view, recipes) => {
+  if (typeof recipes === 'string') {
+    view.innerHTML = `<p>${recipes}</p>`;
   } else {
-    renderRecipeCards(view, results, currentUser);
+    renderRecipeCards(view, recipes, currentUser);
   }
 };
 
@@ -126,12 +115,10 @@ const toggleBookmark = (e, currentUser, recipeData) => {
   if (e.target.classList[0]=== 'bookmark-icon') {
     if(isUnchecked(e)) {
       recipesToCook(e.target.id, currentUser, recipeData)
-      console.log(currentUser)
       e.target.classList.add('hidden')
       e.target.nextElementSibling.classList.remove('hidden');
     } else {
       removeRecipes(e.target.id, currentUser)
-      console.log(currentUser)
       e.target.classList.add('hidden')
       e.target.previousElementSibling.classList.remove('hidden');
     }
